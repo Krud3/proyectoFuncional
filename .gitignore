@@ -1,0 +1,57 @@
+# Ficheros y directorios de compilación de Scala/SBT
+target/
+ProyectoFuncionalConcurrente/target/
+ProyectoFuncionalConcurrente/project/
+lib_managed/
+src_managed/
+.project
+.classpath
+.cache
+.history
+.dist
+.tmp
+
+# Ficheros y directorios específicos de IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.idea_modules/
+
+# Ficheros de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ficheros de paquetes
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Logs y bases de datos
+*.log
+*.sql
+*.sqlite
+
+# Ficheros de configuración personal
+*.conf
+*.conf.orig
+
+# Otros
+*.class
+*.swp
+*.swo
+
+# Metals (Language Server for Scala)
+.metals/
+.bloop/
+*.worksheet.sc
+
+# VS Code (Code OSS) settings
+.vscode/
+
+
