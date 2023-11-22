@@ -10,6 +10,7 @@ src_managed/
 .history
 .dist
 .tmp
+.scala-build/
 
 # Ficheros y directorios específicos de IntelliJ IDEA
 .idea/
