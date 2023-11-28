@@ -1,4 +1,5 @@
 import Oraculo._
+import ArbolSufijos._
 import ReconstCadenas._
 import scala.util.Random
 
@@ -21,18 +22,129 @@ val sec2 = Seq('a', 'c', 'g', 'c', 'a')
 val sec3=secAlAzar(10,Seq())
 
 val or_1=crearOraculo(costoOraculo)(sec1)
+or_1('a' +: Seq.empty)
 val or_2=crearOraculo(costoOraculo)(sec2)
 val or_3=crearOraculo(costoOraculo)(sec3)
 
-reconstruirCadenaIngenuo(sec1.length, or_1)
-reconstruirCadenaIngenuo(sec2.length, or_2)
+val s = 'c' +: 'a' +: 'a' +: 'c' +: Seq.empty
 
-val sec4 = secAlAzar(8,Seq())
+val ss1 = 'c' +: 'a' +: Seq.empty
+val ss2 = 'a' +: 'a' +: Seq.empty
+val ss3 = 'a' +: 'c' +: Seq.empty
+
+val subsecuencias = ss1 +: ss2 +: ss3 +: Seq.empty
+
+def son(s: Seq[Char], subsecuencias: Seq[Seq[Char]]): Boolean = {
+  val l = s.length / 2
+  val bools = (for (
+    i <- 0 to l
+  ) yield subsecuencias.contains(s.slice(i, i + l))).toSet
+  !bools.contains(false)
+}
+
+son(s, subsecuencias)
+
+val sec4 = secAlAzar(16, Seq())
 val or_4 = crearOraculo(costoOraculo)(sec4)
 
-reconstruirCadenaMejorado(sec4.length, or_4)
+var inicio1 = System.nanoTime()
 reconstruirCadenaTurbo(sec4.length, or_4)
+var fin1 = System.nanoTime()
+var tiempo1 = (fin1 - inicio1)/1e9
 
+var inicio2 = System.nanoTime()
+reconstruirCadenaTurboMejorada(sec4.length, or_4)
+var fin2 = System.nanoTime()
+var tiempo2 = (fin2 - inicio2)/1e9
+
+var aceleracion = tiempo1/tiempo2
+
+
+
+
+val t = Nodo ('_', false, List(
+  Nodo('a', false, List(
+    Nodo('c', true, List(
+      Nodo('a', false, List(
+        Hoja('c', true)
+      )),
+      Hoja('t', true)
+    ))
+  )),
+  Nodo('c', true, List(
+    Nodo('a', false, List(
+      Nodo('c', true, List(
+        Hoja('t', true)
+      ))
+    )),
+    Hoja('t', true)
+  )),
+  Hoja('t', true)
+))
+
+val s1 = 'a' +: 'c' +: Seq.empty
+val s2 = 'a' +: 'c' +: 't' +: Seq.empty
+val s3 = 'a' +: 'c' +: 'a' +: 'c' +: Seq.empty
+val s4 = 'c' +: Seq.empty
+val s5 = 'c' +: 't' +: Seq.empty
+val s6 = 'c' +: 'a' +: 'c' +: Seq.empty
+val s7 = 'c' +: 'a' +: 'c' +: 't' +: Seq.empty
+val s8 = 't' +: Seq.empty
+
+pertenece(s1, t)
+pertenece(s2, t)
+pertenece(s3, t)
+pertenece(s4, t)
+pertenece(s5, t)
+pertenece(s6, t)
+pertenece(s7, t)
+pertenece(s8, t)
+
+val s10 = secAlAzar(100, Seq.empty)
+
+val t2 = adicionar(s10,t)
+
+pertenece(s10, t2)
+
+val h = 100
+
+val s11 = secAlAzar(h, Seq.empty)
+val s22 = secAlAzar(h, Seq.empty)
+val s33 = secAlAzar(h, Seq.empty)
+val s44 = secAlAzar(h, Seq.empty)
+
+val secuencias = s11 +: s22 +:  s33 +: s44 +: Seq.empty
+
+val tt = arbolDeSufijos(secuencias)
+
+pertenece(s11, tt)
+pertenece(s22, tt)
+pertenece(s33, tt)
+pertenece(s44, tt)
+
+
+val sss1 = 'a' +: 'b' +: Seq.empty
+val sss2 = 'c' +: 'd' +: Seq.empty
+
+def auxiliar(c: Char): Boolean = {
+  println("waa")
+  c == 'a'
+}
+
+for (
+  sub_cadena_1 <- sss1;
+  sub_cadena_2 <- sss2
+
+  if (sub_cadena_1 == 'd')
+  if auxiliar('c')
+  //if o(sub_cadena_1 ++ sub_cadena_2)
+) yield sub_cadena_1 +: sub_cadena_2 +: Seq.empty
+
+
+
+
+//reconstruirCadenaIngenuo(sec1.length, or_1)
+//reconstruirCadenaIngenuo(sec2.length, or_2)
 //reconstruirCadenaIngenuo(sec3.length, or_3)
 
 //def secsCortasParaPruebas(n:Int):Seq[Seq[Char]] = for {//
