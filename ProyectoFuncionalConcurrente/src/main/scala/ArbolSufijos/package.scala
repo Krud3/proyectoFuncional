@@ -106,9 +106,16 @@ package object ArbolSufijos {
 
   //recibe una secuencia de secuencias ss y devuelve el trie correspondiente al arbol de sufijos de ss.
   def arbolDeSufijos(ss: Seq[Seq[Char]]): Trie = {
-    ss.foldLeft(Nodo('_', false, List())) { (trie, s) =>
-      // la función anónima ahora devuelve un objeto de tipo Trie
-      val trieNuevo = adicionar(s, trie)
+    def adicionarSufijos(sec: Seq[Char], t: Trie): Trie = {
+      if (sec.length == 0) {
+        t
+      } else {
+        val t2 = adicionarSufijos(sec.drop(1), t)
+        adicionar(sec, t2)
+      }
+    }
+    ss.foldLeft(Nodo('_', false, List())) {
+      (trie, s) => val trieNuevo = adicionarSufijos(s, trie)
       trieNuevo match {
         case Nodo(a, b, c) => Nodo(a, b, c)
       }

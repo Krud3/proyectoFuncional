@@ -93,6 +93,9 @@ package object ReconstCadenas {
         ) yield subsecuencias.contains(s.slice(i, i + l))).toSet
         !bools.contains(false)
       }
+
+      // CC    CA    AC        CAAC   AA    SC
+
       def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): List[Seq[Char]] = {
         if (longitud == 1)
           (for (un_caracter <- alfabeto) yield un_caracter +: Nil).toList
@@ -102,7 +105,7 @@ package object ReconstCadenas {
             sub_cadena_1 <- subcadenas_validas_anteriores;
             sub_cadena_2 <- subcadenas_validas_anteriores
             // if (son(sub_cadena_1 ++ sub_cadena_2, subcadenas_validas_anteriores) && o(sub_cadena_1 ++ sub_cadena_2)) ???
-            if (son(sub_cadena_1 ++ sub_cadena_2, subcadenas_validas_anteriores))
+            if son(sub_cadena_1 ++ sub_cadena_2, subcadenas_validas_anteriores)
             if o(sub_cadena_1 ++ sub_cadena_2)
           ) yield sub_cadena_1 ++ sub_cadena_2
           lista_combinaciones
@@ -113,26 +116,86 @@ package object ReconstCadenas {
     }
   }
 
+  // recibe la longitud de la secuencia que hay que reconstruir (n, potencia de 2), y un oraculo para esa secuencia
+  // y devuelve la secuencia reconstruida
+  // Usa la propiedad de que si s = s1 ++ s2 entonces s1 y s2 tambien son subsecuencias de s
+  // Usa arboles de sufijos para guardar Seq[Seq[Char]]...
   def reconstruirCadenaTurboAcelerada(n: Int, o: Oraculo): Seq[Char] = {
     if (n < 1) {
       Seq.empty[Char]
     }
     else {
+      def son(s: Seq[Char], t:  Trie): Boolean = {
+        val l = s.length / 2
+        val bools = (for (
+          i <- 0 to l
+        ) yield pertenece(s.slice(i, i + l), t)).toSet
+        !bools.contains(false)
+      }
       def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): List[Seq[Char]] = {
         if (longitud == 1)
           (for (un_caracter <- alfabeto) yield un_caracter +: Nil).toList
         else {
           val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
-          val lista_combinaciones = for (sub_cadena_1 <- subcadenas_validas_anteriores; sub_cadena_2 <- subcadenas_validas_anteriores if o(sub_cadena_1 ++ sub_cadena_2)) yield sub_cadena_1 ++ sub_cadena_2
+          val arbol_subc = arbolDeSufijos(subcadenas_validas_anteriores)
+          val lista_combinaciones = for (
+            sub_cadena_1 <- subcadenas_validas_anteriores;
+            sub_cadena_2 <- subcadenas_validas_anteriores
+            // if (son(sub_cadena_1 ++ sub_cadena_2, subcadenas_validas_anteriores) && o(sub_cadena_1 ++ sub_cadena_2)) ???
+            if son(sub_cadena_1 ++ sub_cadena_2, arbol_subc)
+            if o(sub_cadena_1 ++ sub_cadena_2)
+          ) yield sub_cadena_1 ++ sub_cadena_2
           lista_combinaciones
         }
       }
-
       val cadenas = subcadenasTurbo(alfabeto, n)
-      val t = arbolDeSufijos(cadenas)
-      val primera_cadena = cadenas.find(o(_)).get
+      cadenas.find(o(_)).get
+    }
+  }
 
-      primera_cadena
+  def reconstruirCadenaTurboAceleradaErr(n: Int, o: Oraculo): Seq[Char] = {
+    if (n < 1) {
+      Seq.empty[Char]
+    }
+    else {
+      def son(s: Seq[Char], t: Trie): Boolean = {
+        val l = s.length / 2
+        val bools = (for (
+          i <- 0 to l
+        ) yield pertenece(s.slice(i, i + l), t)).toSet
+        !bools.contains(false)
+      }
+
+      def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): (List[Seq[Char]], Trie) = {
+        if (longitud == 1) {
+          val secs = (for (un_caracter <- alfabeto) yield un_caracter +: Nil).toList
+          val newTrie = arbolDeSufijos(secs)
+          (secs, newTrie)
+        } else {
+          val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
+          val arbol_subc = subcadenas_validas_anteriores._2
+          val lista_combinaciones = for (
+            sub_cadena_1 <- subcadenas_validas_anteriores._1;
+            sub_cadena_2 <- subcadenas_validas_anteriores._1
+            // if (son(sub_cadena_1 ++ sub_cadena_2, subcadenas_validas_anteriores) && o(sub_cadena_1 ++ sub_cadena_2)) ???
+            if son(sub_cadena_1 ++ sub_cadena_2, arbol_subc)
+            if o(sub_cadena_1 ++ sub_cadena_2)
+          ) yield sub_cadena_1 ++ sub_cadena_2
+
+          val tri = lista_combinaciones.foldLeft(arbol_subc) {
+            (trie, s) =>
+              adicionar(s, arbol_subc)
+              arbol_subc match {
+                case Nodo(a, b, c) => Nodo(a, b, c)
+              }
+          }
+
+          (lista_combinaciones, tri)
+        }
+      }
+
+      val cadenas = subcadenasTurbo(alfabeto, n)._1
+      cadenas.find(o(_)).get
     }
   }
 }

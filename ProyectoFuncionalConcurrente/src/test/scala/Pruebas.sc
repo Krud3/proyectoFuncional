@@ -44,24 +44,25 @@ def son(s: Seq[Char], subsecuencias: Seq[Seq[Char]]): Boolean = {
 
 son(s, subsecuencias)
 
-val sec4 = secAlAzar(16, Seq())
+val p = 5
+val l = Math.pow(2, p).toInt
+
+val sec4 = secAlAzar(l, Seq())
 val or_4 = crearOraculo(costoOraculo)(sec4)
 
 var inicio1 = System.nanoTime()
-reconstruirCadenaTurbo(sec4.length, or_4)
+reconstruirCadenaMejorado(sec4.length, or_4)
 var fin1 = System.nanoTime()
 var tiempo1 = (fin1 - inicio1)/1e9
 
 var inicio2 = System.nanoTime()
-reconstruirCadenaTurboMejorada(sec4.length, or_4)
+reconstruirCadenaTurbo(sec4.length, or_4)
 var fin2 = System.nanoTime()
 var tiempo2 = (fin2 - inicio2)/1e9
 
 var aceleracion = tiempo1/tiempo2
 
-
-
-
+/*
 val t = Nodo ('_', false, List(
   Nodo('a', false, List(
     Nodo('c', true, List(
@@ -106,7 +107,7 @@ val t2 = adicionar(s10,t)
 
 pertenece(s10, t2)
 
-val h = 100
+val h = 4
 
 val s11 = secAlAzar(h, Seq.empty)
 val s22 = secAlAzar(h, Seq.empty)
@@ -122,26 +123,37 @@ pertenece(s22, tt)
 pertenece(s33, tt)
 pertenece(s44, tt)
 
+val s111 = s11.drop(1)
+val s222 = s22.drop(1)
+val s333 = s33.drop(1)
+val s444 = s44.drop(1)
 
-val sss1 = 'a' +: 'b' +: Seq.empty
-val sss2 = 'c' +: 'd' +: Seq.empty
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
 
-def auxiliar(c: Char): Boolean = {
-  println("waa")
-  c == 'a'
-}
+val s111 = s11.drop(2)
+val s222 = s22.drop(2)
+val s333 = s33.drop(2)
+val s444 = s44.drop(2)
 
-for (
-  sub_cadena_1 <- sss1;
-  sub_cadena_2 <- sss2
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
 
-  if (sub_cadena_1 == 'd')
-  if auxiliar('c')
-  //if o(sub_cadena_1 ++ sub_cadena_2)
-) yield sub_cadena_1 +: sub_cadena_2 +: Seq.empty
+val s111 = s11.drop(3)
+val s222 = s22.drop(3)
+val s333 = s33.drop(3)
+val s444 = s44.drop(3)
 
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
 
-
+*/
 
 //reconstruirCadenaIngenuo(sec1.length, or_1)
 //reconstruirCadenaIngenuo(sec2.length, or_2)
