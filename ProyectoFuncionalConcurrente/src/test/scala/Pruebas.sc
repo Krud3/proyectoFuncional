@@ -44,7 +44,29 @@ def son(s: Seq[Char], subsecuencias: Seq[Seq[Char]]): Boolean = {
 
 son(s, subsecuencias)
 
-val p = 5
+
+
+
+
+def combinaciones(n: Int, condicion: Seq[Char] => Boolean): Seq[Seq[Char]] = {
+  if (n == 1) {
+    (for (un_caracter <- alfabeto) yield un_caracter +: Nil)
+  } else {
+    val cadenas: Seq[Seq[Char]] = combinaciones(n / 2, condicion)
+    cadenas.flatMap { cadena1 =>
+      cadenas.flatMap { cadena2 =>
+        condicion(cadena1 ++ cadena2) match {
+          case true => List(cadena1 ++ cadena2)
+          case false => Nil
+        }
+      }
+    }
+  }
+}
+
+combinaciones(4, or_1).head
+
+val p = 6
 val l = Math.pow(2, p).toInt
 
 val sec4 = secAlAzar(l, Seq())
@@ -56,9 +78,14 @@ var fin1 = System.nanoTime()
 var tiempo1 = (fin1 - inicio1)/1e9
 
 var inicio2 = System.nanoTime()
-reconstruirCadenaTurbo(sec4.length, or_4)
+reconstruirCadenaTurbo1(sec4.length, or_4)
 var fin2 = System.nanoTime()
 var tiempo2 = (fin2 - inicio2)/1e9
+
+var inicio3 = System.nanoTime()
+reconstruirCadenaTurbo(sec4.length, or_4)
+var fin3 = System.nanoTime()
+var tiempo3 = (fin3 - inicio3)/1e9
 
 var aceleracion = tiempo1/tiempo2
 

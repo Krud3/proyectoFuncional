@@ -55,6 +55,24 @@ package object ReconstCadenas {
   // recibe la longitud de la secuencia que hay que reconstruir (n, potencia de 2), y un oraculo para esa secuencia
   // y devuelve la secuencia reconstruida
   // Usa la propiedad de que si s = s1 ++ s2 entonces s1 y s2 tambien son subsecuencias de s
+
+
+  def combinaciones(n: Int, condicion: Seq[Char] => Boolean): Seq[Seq[Char]] = {
+    if (n == 1) {
+      (for (un_caracter <- alfabeto) yield un_caracter +: Nil)
+    } else {
+      val cadenas: Seq[Seq[Char]] = combinaciones(n / 2, condicion)
+      cadenas.flatMap { cadena1 =>
+        cadenas.flatMap { cadena2 =>
+          condicion(cadena1 ++ cadena2) match {
+            case true => List(cadena1 ++ cadena2)
+            case false => Nil
+          }
+        }
+      }
+    }
+  }
+
   def reconstruirCadenaTurbo(n: Int, o: Oraculo): Seq[Char] = {
     if (n < 1) {
       Seq.empty[Char]
@@ -73,8 +91,37 @@ package object ReconstCadenas {
           lista_combinaciones
         }
       }
-      val cadenas = subcadenasTurbo(alfabeto, n)
-      cadenas.find(o(_)).get
+      //val cadenas = subcadenasTurbo(alfabeto, n)
+      //cadenas.find(o(_)).get
+      combinaciones(n, o).head
+    }
+  }
+
+  // Con recursión de cola
+  def reconstruirCadenaTurbo1(n: Int, o: Oraculo): Seq[Char] = {
+    if (n < 1) {
+      Seq.empty[Char]
+    }
+    else {
+      val base = for (un_caracter <- alfabeto) yield un_caracter +: Nil
+      if (n == 1) {
+        base.find(o(_)).get
+      } else {
+        def subcadenasTurbo1(longitud: Int, secActuales: Seq[Seq[Char]]): Seq[Seq[Char]] = {
+          if (longitud == 1) {
+            secActuales
+          } else {
+          val lista_combinaciones = for (
+            sub_cadena_1 <- secActuales;
+            sub_cadena_2 <- secActuales
+            if o(sub_cadena_1 ++ sub_cadena_2)
+          ) yield sub_cadena_1 ++ sub_cadena_2
+            subcadenasTurbo1(longitud / 2, lista_combinaciones)
+          }
+        }
+        val cadenas = subcadenasTurbo1(n, base)
+        cadenas.find(o(_)).get
+      }
     }
   }
 
@@ -93,8 +140,6 @@ package object ReconstCadenas {
         ) yield subsecuencias.contains(s.slice(i, i + l))).toSet
         !bools.contains(false)
       }
-
-      // CC    CA    AC        CAAC   AA    SC
 
       def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): List[Seq[Char]] = {
         if (longitud == 1)
