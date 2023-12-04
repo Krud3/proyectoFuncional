@@ -1,6 +1,8 @@
 import common._ 
 import Oraculo._
 import ReconstCadenas._
+import scala.collection.parallel.immutable.ParSeq
+import scala.collection.parallel.CollectionConverters._
 package object ReconstCadenasPar {
 
     /**
@@ -41,9 +43,64 @@ package object ReconstCadenasPar {
                 sublista.find(o(_))
                 }
             )
-
+            //CAMBIAR EL FIND PLEASE
             val resultados = tareasParalelas.map(_.join())
             resultados.find(_.isDefined).flatten.getOrElse(Seq.empty[Char])
+        }
+    }
+                        //  {["a",'c','t'],["a",'c','t'],["a",'c','t']}
+    /*
+    def validarCadenasOraculo(o:Oraculo, subCadenas:ParSeq[Seq[Char]]): Seq[Char] = subCadenas match {            
+        case Seq() => Seq()
+        case x::xs => if (o(x)) x else validarCadenasOraculo(o, xs)            
+    }*/
+    val umbral = 10
+    def reconstruirCadenaMejoradoPar(n: Int, o: Oraculo): Seq[Char] = {
+        if (n < 1) {
+            Seq.empty[Char]
+        }
+        else {
+            def subcadenas(alfabeto: Seq[Char], longitud: Int): ParSeq[Seq[Char]] = {
+                //if(longitud < umbral)
+                    //reconstruirCadenaMejorado(n, o)
+                if (longitud == 0)
+                    ParSeq(Seq.empty[Char])
+                else {
+                    val subcadenas_validas_anteriores = subcadenas(alfabeto, longitud - 1)
+                    (for (
+                            un_caracter <- alfabeto;
+                            una_subcadena <- subcadenas_validas_anteriores;
+                            values = un_caracter +: una_subcadena
+                            if o(values)
+                        ) yield values).par
+                    
+                }
+            }
+        subcadenas(alfabeto, n)(0)
+        }
+    }
+
+    def reconstruirCadenaTurboPar(n: Int, o: Oraculo): Seq[Char] = {
+        if (n < 1) {
+            Seq.empty[Char]
+        }
+        else {
+        def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): ParSeq[Seq[Char]] = {
+            if (longitud == 1)
+                alfabeto.par.map(Seq(_))
+            else {
+                val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
+                (for (
+                        sub_cadena_1 <- subcadenas_validas_anteriores;
+                        sub_cadena_2 <- subcadenas_validas_anteriores;
+                        values = sub_cadena_1 ++ sub_cadena_2
+                        if o(values)
+                    ) yield values).par
+                
+            }
+            }
+        val cadenas = subcadenasTurbo(alfabeto, n)
+        cadenas(0)
         }
     }
 

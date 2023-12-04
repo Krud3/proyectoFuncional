@@ -212,8 +212,11 @@ package object ReconstCadenas {
     def compareSeqs(seq1:Seq[Char],seq2:Seq[Char]):Boolean = {
         if (seq1.length != seq2.length) false
         else {
-            val seqs = seq1.zip(seq2)
-            seqs.forall{case (x,y) => x==y}
+            if (seq1.isEmpty) true
+            else {
+                if (seq1.head == seq2.head) compareSeqs(seq1.tail,seq2.tail)
+                else false
+            }
         }
     }
 }
