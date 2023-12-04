@@ -28,11 +28,15 @@ val or_3=crearOraculo(costoOraculo)(sec3)
 
 val s = 'c' +: 'a' +: 'a' +: 'c' +: Seq.empty
 
-val ss1 = 'c' +: 'a' +: Seq.empty
-val ss2 = 'a' +: 'a' +: Seq.empty
-val ss3 = 'a' +: 'c' +: Seq.empty
+val ss1 = 'c' +: 'a' +: 'c' +: 'a' +: Seq.empty
+val ss2 = 'a' +: 'c' +: 'a' +: 'c' +: Seq.empty
+val ss3 = 'c' +: 'a' +: 'c' +: 'c' +: Seq.empty
+
+val sss = 'c' +: 'a' +: 'c' +: 'a' +: 'c' +: 'a' +: 'c' +: 'a' +: Seq.empty
 
 val subsecuencias = ss1 +: ss2 +: ss3 +: Seq.empty
+
+val tris = arbolDeSufijos(subsecuencias)
 
 def son(s: Seq[Char], subsecuencias: Seq[Seq[Char]]): Boolean = {
   val l = s.length / 2
@@ -42,54 +46,66 @@ def son(s: Seq[Char], subsecuencias: Seq[Seq[Char]]): Boolean = {
   !bools.contains(false)
 }
 
-son(s, subsecuencias)
-
-
-
-
-
-def combinaciones(n: Int, condicion: Seq[Char] => Boolean): Seq[Seq[Char]] = {
-  if (n == 1) {
-    (for (un_caracter <- alfabeto) yield un_caracter +: Nil)
-  } else {
-    val cadenas: Seq[Seq[Char]] = combinaciones(n / 2, condicion)
-    cadenas.flatMap { cadena1 =>
-      cadenas.flatMap { cadena2 =>
-        condicion(cadena1 ++ cadena2) match {
-          case true => List(cadena1 ++ cadena2)
-          case false => Nil
-        }
-      }
-    }
-  }
+def son2(s: Seq[Char], t: Trie): Boolean = {
+  val l = s.length / 2
+  val bools = (for (
+    i <- 1 until l
+  ) yield pertenece(s.slice(i, i + l - 1), t)).toSet
+  !bools.contains(false)
 }
 
-combinaciones(4, or_1).head
 
-val p = 6
+var inicio1 = System.nanoTime()
+son(sss, subsecuencias)
+var fin1 = System.nanoTime()
+var tiempo1 = (fin1 - inicio1)/1e9
+
+var inicio2 = System.nanoTime()
+son2(sss, tris)
+var fin2 = System.nanoTime()
+var tiempo2 = (fin2 - inicio2)/1e9
+
+var aceleracion = tiempo1/tiempo2
+
+
+
+
+
+
+
+val ss4 = 'c' +: 'a' +: 'c' +: 'c' +: Seq.empty
+//val ss4 = 'c' +: 'c' +: Seq.empty
+val or_4 = crearOraculo(costoOraculo)(ss4)
+
+val p = 11
 val l = Math.pow(2, p).toInt
 
 val sec4 = secAlAzar(l, Seq())
 val or_4 = crearOraculo(costoOraculo)(sec4)
 
 var inicio1 = System.nanoTime()
-reconstruirCadenaMejorado(sec4.length, or_4)
+reconstruirCadenaTurboAcelerada2(sec4.length, or_4)
 var fin1 = System.nanoTime()
 var tiempo1 = (fin1 - inicio1)/1e9
 
 var inicio2 = System.nanoTime()
-reconstruirCadenaTurbo1(sec4.length, or_4)
+reconstruirCadenaTurboMejorada1(sec4.length, or_4)
 var fin2 = System.nanoTime()
 var tiempo2 = (fin2 - inicio2)/1e9
 
 var inicio3 = System.nanoTime()
-reconstruirCadenaTurbo(sec4.length, or_4)
+//reconstruirCadenaTurboMejorada1(sec4.length, or_4)
 var fin3 = System.nanoTime()
 var tiempo3 = (fin3 - inicio3)/1e9
 
 var aceleracion = tiempo1/tiempo2
 
-/*
+
+
+
+
+
+
 val t = Nodo ('_', false, List(
   Nodo('a', false, List(
     Nodo('c', true, List(
@@ -180,7 +196,40 @@ pertenece(s222, tt)
 pertenece(s333, tt)
 pertenece(s444, tt)
 
-*/
+
+
+
+
+val s111 = s11.dropRight(1)
+val s222 = s22.dropRight(1)
+val s333 = s33.dropRight(1)
+val s444 = s44.dropRight(1)
+
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
+
+val s111 = s11.dropRight(2)
+val s222 = s22.dropRight(2)
+val s333 = s33.dropRight(2)
+val s444 = s44.dropRight(2)
+
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
+
+val s111 = s11.dropRight(3)
+val s222 = s22.dropRight(3)
+val s333 = s33.dropRight(3)
+val s444 = s44.dropRight(3)
+
+pertenece(s111, tt)
+pertenece(s222, tt)
+pertenece(s333, tt)
+pertenece(s444, tt)
+
 
 //reconstruirCadenaIngenuo(sec1.length, or_1)
 //reconstruirCadenaIngenuo(sec2.length, or_2)

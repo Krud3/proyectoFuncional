@@ -20,22 +20,6 @@ package object ArbolSufijos {
     }
   }
 
-  // Devuelve true si la secuencia s es reconocida por el trie t, y false si no.
-  def perteneceErr(s: Seq[Char], t: Trie): Boolean = {
-    t match {
-      case Nodo(_, b, lt) => {
-        if (cabezas(t).contains(s(0))) {
-          val hijoElegido = lt.find(nodo => raiz(nodo) == s(0)).get
-          perteneceErr(s.drop(1), hijoElegido)
-        }
-        else {
-          false
-        }
-      }
-      case Hoja(c, b) => Seq[Char](c) == s(0) && (s.length < 2) && b
-    }
-  }
-
   // Devuelve true si la secuencia s es reconocida por el trie t, y false si no
   def pertenece(s: Seq[Char], t: Trie): Boolean = {
     if (s.length < 1) t match {
@@ -56,7 +40,7 @@ package object ArbolSufijos {
     }
   }
 
-// Adiciona una secuencia de uno o mas caracteres a un trie.
+  // Adiciona una secuencia de uno o mas caracteres a un trie.
   def adicionar(s: Seq[Char], t: Trie): Trie = {
     if (pertenece(s, t) || s.isEmpty) {
       t
@@ -114,8 +98,9 @@ package object ArbolSufijos {
         adicionar(sec, t2)
       }
     }
+
     ss.foldLeft(Nodo('_', false, List())) {
-      (trie, s) => val trieNuevo = adicionarSufijos(s, trie)
+      (trie, s) => val trieNuevo = adicionar(s, trie)
       trieNuevo match {
         case Nodo(a, b, c) => Nodo(a, b, c)
       }
