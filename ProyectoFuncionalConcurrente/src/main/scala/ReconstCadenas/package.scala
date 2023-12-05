@@ -81,7 +81,7 @@ package object ReconstCadenas {
         else {
         def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): Seq[Seq[Char]] = {
             if (longitud == 1)
-                (for (un_caracter <- alfabeto) yield un_caracter +: Nil).toSeq
+                for(un_caracter <- alfabeto; if(o(Seq(un_caracter)))) yield Seq(un_caracter)
             else {
                 val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
                 val lista_combinaciones = for (
@@ -108,7 +108,7 @@ package object ReconstCadenas {
       * @param o Oraculo
       * @return Cadena reconstruida
       */
-    def reconstruirCadenaTurboMejorada(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaTurboMejorado(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
         Seq.empty[Char]
         }
@@ -130,7 +130,7 @@ package object ReconstCadenas {
             // y verificar si son subsecuencias de la cadena anterior y del oraculo
             def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): Seq[Seq[Char]] = {
                     if (longitud == 1)
-                    (for (un_caracter <- alfabeto) yield un_caracter +: Nil).toSeq
+                        for(un_caracter <- alfabeto; if(o(Seq(un_caracter)))) yield Seq(un_caracter)
                     else {
                     val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
                     val lista_combinaciones = for (
@@ -179,9 +179,9 @@ package object ReconstCadenas {
                 }
             }
             //Funcion encargada de generar las cadenas validas a partir de una secuencia inicial y un arbol inicial
-            def subCaddenasAlternativa(secuenciaInicial: Seq[Seq[Char]],arbolInicial : Trie, tam : Int, aumentador:Int): Seq[Char]= {
-                if(tam == aumentador){
-                    secuenciaInicial(0)
+            def subCaddenasAlternativa(secuenciaInicial: Seq[Seq[Char]],arbolInicial : Trie, aumentador:Int): Seq[Char]= {
+                if(n == aumentador){
+                    secuenciaInicial(0) 
                 }
                 else{
                     val arbolNuevo: Trie = secuenciaInicial.foldLeft(arbolInicial) { (arbolActual, secuencia) =>
@@ -193,12 +193,12 @@ package object ReconstCadenas {
                         if(son(valor, arbolNuevo, aumentador))
                         if(o(valor))
                     )yield valor
-                    subCaddenasAlternativa(lista_combinaciones, arbolNuevo, tam, aumentador*2)
+                    subCaddenasAlternativa(lista_combinaciones, arbolNuevo, aumentador*2)
                 }
             }
-            val secuenciaInicial= alfabeto.map(Seq(_))
+            val secuenciaInicial= for(un_caracter <- alfabeto; if(o(Seq(un_caracter)))) yield Seq(un_caracter)
             val arbolInicial = arbolDeSufijos(secuenciaInicial)
-            val cadenas = subCaddenasAlternativa(secuenciaInicial,arbolInicial, n, 1)
+            val cadenas = subCaddenasAlternativa(secuenciaInicial,arbolInicial, 1)
             cadenas
         }
     }
