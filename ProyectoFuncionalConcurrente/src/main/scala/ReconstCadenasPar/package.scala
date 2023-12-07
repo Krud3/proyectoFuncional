@@ -6,10 +6,25 @@ import scala.collection.parallel.immutable.ParSeq
 import scala.collection.parallel.CollectionConverters._
 package object ReconstCadenasPar {
 
+    /**
+      * Metodo encargado de validar las subcadenas de una lista de subcadenas
+      * hasta que se encuentre la que cumpla con la condicion del oraculo
+      *
+      * @param n longitud de las subcadenas
+      * @param o oraculo que se va a utilizar para validar las subcadenas
+      * @param subCadenas lista de subcadenas que se van a validar
+      * @return la subcadena que cumpla con la condicion del oraculo
+      */
+    def validarCadenasOraculo(o:Oraculo, subCadenas:Seq[Seq[Char]]): Seq[Char] = subCadenas match {            
+        case Seq() => Seq()
+        case x::xs => if (o(x)) x else validarCadenasOraculo(o, xs)            
+    }
+
     def reconstruirCadenaIngenuoPar(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
             Seq.empty[Char]
         } 
+        
         else if (n < 4){
             reconstruirCadenaIngenuo(n, o)
         }
@@ -24,18 +39,17 @@ package object ReconstCadenasPar {
                         ) yield un_caracter +: una_subcadena
                     lista_subcadenas.toList
                 }
-                
             }
             val subcadenasListas = subcadenas(alfabeto, n)
             val sublistaSize = 4
             val sublistas = subcadenasListas.grouped(sublistaSize).toList
 
             val tareasParalelas = sublistas.map(sublista => task {
-                sublista.find(o(_))
+                validarCadenasOraculo(o, sublista)
                 }
             )
             val resultados = tareasParalelas.map(_.join())
-            resultados.find(_.isDefined).flatten.getOrElse(Seq.empty[Char])
+            resultados.filter(_.nonEmpty)(0)
         }
     }
 
@@ -83,7 +97,7 @@ package object ReconstCadenasPar {
                     ) yield values).par
                 
             }
-            }
+        }
         val cadenas = subcadenasTurbo(alfabeto, n)
         cadenas(0)
         }

@@ -3,6 +3,20 @@ import Oraculo._
 package object ReconstCadenas {
 
     /**
+      * Metodo encargado de validar las subcadenas de una lista de subcadenas
+      * hasta que se encuentre la que cumpla con la condicion del oraculo
+      *
+      * @param n longitud de las subcadenas
+      * @param o oraculo que se va a utilizar para validar las subcadenas
+      * @param subCadenas lista de subcadenas que se van a validar
+      * @return la subcadena que cumpla con la condicion del oraculo
+      */
+    def validarCadenasOraculo(o:Oraculo, subCadenas:Seq[Seq[Char]]): Seq[Char] = subCadenas match {            
+        case Seq() => Seq()
+        case x::xs => if (o(x)) x else validarCadenasOraculo(o, xs)            
+    }
+
+    /**
       * Metodo encargado de reconstruir una cadena a partir de un oraculo.
       * Utilizando fuerza bruta, llegando a si a todas las combinaciones
       * del alfabeto para el tamaño dado y luego comparar con el oraculo
@@ -27,7 +41,7 @@ package object ReconstCadenas {
             }
         }
         val cadenas = subcadenas(alfabeto, n)
-        cadenas.find(o(_)).get
+        validarCadenasOraculo(o, cadenas)
         }
     }
 
@@ -92,7 +106,7 @@ package object ReconstCadenas {
                     ) yield values
                 lista_combinaciones
             }
-            }
+        }
         val cadenas = subcadenasTurbo(alfabeto, n)
         cadenas(0)
         }
@@ -129,20 +143,20 @@ package object ReconstCadenas {
             //Funcion encargada de generar las cadenas validas anteriores para concatenarlas
             // y verificar si son subsecuencias de la cadena anterior y del oraculo
             def subcadenasTurbo(alfabeto: Seq[Char], longitud: Int): Seq[Seq[Char]] = {
-                    if (longitud == 1)
-                        for(un_caracter <- alfabeto; if(o(Seq(un_caracter)))) yield Seq(un_caracter)
-                    else {
-                    val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
-                    val lista_combinaciones = for (
-                        sub_cadena_1 <- subcadenas_validas_anteriores;
-                        sub_cadena_2 <- subcadenas_validas_anteriores;
-                        values = sub_cadena_1 ++ sub_cadena_2
-                        if (son(values, subcadenas_validas_anteriores, longitud / 2))
-                        if o(values)
-                    ) yield values
-                    lista_combinaciones
-                    }
+                if (longitud == 1)
+                    for(un_caracter <- alfabeto; if(o(Seq(un_caracter)))) yield Seq(un_caracter)
+                else {
+                val subcadenas_validas_anteriores = subcadenasTurbo(alfabeto, longitud / 2)
+                val lista_combinaciones = for (
+                    sub_cadena_1 <- subcadenas_validas_anteriores;
+                    sub_cadena_2 <- subcadenas_validas_anteriores;
+                    values = sub_cadena_1 ++ sub_cadena_2
+                    if (son(values, subcadenas_validas_anteriores, longitud / 2))
+                    if o(values)
+                ) yield values
+                lista_combinaciones
                 }
+            }
         val cadenas = subcadenasTurbo(alfabeto, n)
         cadenas(0)
         }
@@ -200,23 +214,6 @@ package object ReconstCadenas {
             val arbolInicial = arbolDeSufijos(secuenciaInicial)
             val cadenas = subCaddenasAlternativa(secuenciaInicial,arbolInicial, 1)
             cadenas
-        }
-    }
-
-    /**
-      * Funcion auxiliar encargada de comparar dos secuencias de caracteres
-      * @param seq1 Secuencia de caracteres
-      * @param seq2 Secuencia de caracteres
-      * @return True si son iguales, False si no lo son
-      */
-    def compareSeqs(seq1:Seq[Char],seq2:Seq[Char]):Boolean = {
-        if (seq1.length != seq2.length) false
-        else {
-            if (seq1.isEmpty) true
-            else {
-                if (seq1.head == seq2.head) compareSeqs(seq1.tail,seq2.tail)
-                else false
-            }
         }
     }
 }

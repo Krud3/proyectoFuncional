@@ -24,12 +24,12 @@ package object ArbolSufijos {
       */
     def pertenece(s: Seq[Char], t: Trie): Boolean = {
         t match {
-            case Nodo(_, b, hijos) if s.isEmpty => b // Retorna el valor booleano del nodo si la secuencia está vacía
+            case Nodo(_, marcada, _) if s.isEmpty => marcada // Retorna el valor booleano del nodo si la secuencia está vacía
             case Hoja(_, marcada) if s.isEmpty => marcada
             case Nodo(_, _, hijos) =>
-            hijos.find(hijo => raiz(hijo) == s.headOption.getOrElse(return false))
+            hijos.filter(hijo => raiz(hijo) == s.head)
                 .exists(hijo => pertenece(s.tail, hijo))
-            case Hoja(_, marcada) => (s.length < 1) && marcada
+            case _ => false
         }
     }
 
@@ -44,43 +44,43 @@ package object ArbolSufijos {
             t
         }
         else if (s.length == 1) t match {
-            case Nodo(a, b, lt) => {
+            case Nodo(c, b, lt) => {
                 if (cabezas(t).contains(s(0))) {
-                    val hijoElegido = lt.find(hijo => raiz(hijo) == s(0)).get
+                    val hijoElegido = lt.filter(hijo => raiz(hijo) == s(0))(0)
                     val newHijo = hijoElegido match {
-                        case Nodo(a, _, lt) => Nodo(a, true, lt)
-                        case Hoja(a, _) => Hoja(a, true)
+                        case Nodo(c, _, lt) => Nodo(c, true, lt)
+                        case Hoja(c, _) => Hoja(c, true)
                     }
                     val newlt = newHijo +: lt.filterNot(_ == hijoElegido)
-                    Nodo(a, b, newlt)
+                    Nodo(c, b, newlt)
                 } else {
                     val newlt = Hoja(s(0), true) +: lt
-                    Nodo(a, b, newlt)
+                    Nodo(c, b, newlt)
                 }
             }
-            case Hoja(a, b) => {
+            case Hoja(c, b) => {
                 val newlt = Hoja(s(0), true) +: Nil
-                Nodo(a, b, newlt)
+                Nodo(c, b, newlt)
             }
         }
         else {
             t match {
-                case Nodo(a, b, lt) => {
+                case Nodo(c, b, lt) => {
                     if (cabezas(t).contains(s(0))) {
-                        val hijoElegido = lt.find(hijo => raiz(hijo) == s(0)).get
+                        val hijoElegido = lt.filter(hijo => raiz(hijo) == s(0))(0)
                         val newlt = adicionar(s.drop(1), hijoElegido) +: lt.filterNot(_ == hijoElegido)
-                        Nodo(a, b, newlt)
+                        Nodo(c, b, newlt)
                     }
                     else {
                         val newHijo = Nodo(s(0), false, List())
                         val newlt = adicionar(s.drop(1), newHijo) +: lt
-                        Nodo(a, b, newlt)
+                        Nodo(c, b, newlt)
                     }
                 }
-                case Hoja(a, b) => {
+                case Hoja(c, b) => {
                     val newNodo = Nodo(s(0), false, List())
                     val newlt = adicionar(s.drop(1), newNodo) +: Nil
-                    Nodo(a, b, newlt)
+                    Nodo(c, b, newlt)
                 }
             }
         }
@@ -99,31 +99,12 @@ package object ArbolSufijos {
                 val t2 = adicionarSufijos(sec.drop(1), t)
                 adicionar(sec, t2)
             }
-            }
-
+        }
             ss.foldLeft(Nodo('_', false, List())) {
             (trie, s) => val trieNuevo = adicionarSufijos(s, trie)
             trieNuevo match {
-                case Nodo(a, b, c) => Nodo(a, b, c)
+                case Nodo(c, b, lt) => Nodo(c, b, lt)
             }
         }
     } 
-
-    /**
-      * Metodo encargado de imprimir el arbol de sufijos dado para una visualizacion de este
-      * @param t Arbol de sufijos
-      * @param prefijo Prefijo para la visualizacion del arbol
-      */
-    def imprimirTrie(t: Trie, prefijo: String = ""): Unit = {
-        t match {
-            case Nodo(car, marcada, hijos) =>
-                // Imprime el carácter de este nodo
-                println(prefijo + (if (car == '_') "" else car) + (if (marcada) "*" else ""))
-                // Imprime todos los hijos recursivamente, aumentando el prefijo
-                hijos.foreach(hijo => imprimirTrie(hijo, prefijo + car))
-            case Hoja(car, marcada) =>
-                // Imprime el carácter de la hoja y marca si es el final de una palabra
-                println(prefijo + car + (if (marcada) "*" else ""))
-        }
-    }
 }
