@@ -25,7 +25,7 @@ package object ReconstCadenasPar {
             Seq.empty[Char]
         } 
         
-        else if (umbral < 4){
+        else if (n <= umbral){
             reconstruirCadenaIngenuo(n, o)
         }
         else {
@@ -57,7 +57,7 @@ package object ReconstCadenasPar {
         if (n < 1) {
             Seq.empty[Char]
         }
-        if(umbral == 1){
+        if(n <= umbral){
             reconstruirCadenaMejorado(n,o)
         }
         else {
@@ -83,7 +83,7 @@ package object ReconstCadenasPar {
         if (n < 1) {
             Seq.empty[Char]
         }
-        else if (umbral == 1){
+        else if (n <= umbral){
             reconstruirCadenaTurbo(n, o)
         }
         else {
@@ -110,7 +110,7 @@ package object ReconstCadenasPar {
         if (n < 1) {
         Seq.empty[Char]
         }
-        else if (umbral == 1){
+        else if (n <= umbral){
             reconstruirCadenaTurboMejorado(n, o)
         }
         else {
@@ -150,7 +150,7 @@ package object ReconstCadenasPar {
         if (n < 1) {
             Seq.empty[Char]
         }
-        else if (umbral <= 2){
+        else if (n <= umbral){
             reconstruirCadenaTurboMejorado(n, o)
         }
         else {
