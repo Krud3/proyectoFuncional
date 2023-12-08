@@ -20,12 +20,12 @@ package object ReconstCadenasPar {
         case x::xs => if (o(x)) x else validarCadenasOraculo(o, xs)            
     }
 
-    def reconstruirCadenaIngenuoPar(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaIngenuoPar(umbral:Int)(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
             Seq.empty[Char]
         } 
         
-        else if (n < 4){
+        else if (umbral < 4){
             reconstruirCadenaIngenuo(n, o)
         }
         else {
@@ -53,9 +53,12 @@ package object ReconstCadenasPar {
         }
     }
 
-    def reconstruirCadenaMejoradoPar(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaMejoradoPar(umbral:Int)(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
             Seq.empty[Char]
+        }
+        if(umbral == 1){
+            reconstruirCadenaMejorado(n,o)
         }
         else {
             def subcadenas(alfabeto: Seq[Char], longitud: Int): ParSeq[Seq[Char]] = {
@@ -76,11 +79,11 @@ package object ReconstCadenasPar {
         }
     }
 
-    def reconstruirCadenaTurboPar(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaTurboPar(umbral:Int)(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
             Seq.empty[Char]
         }
-        else if (n == 1){
+        else if (umbral == 1){
             reconstruirCadenaTurbo(n, o)
         }
         else {
@@ -103,11 +106,11 @@ package object ReconstCadenasPar {
         }
     }
 
-    def reconstruirCadenaTurboMejoradoPar(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaTurboMejoradoPar(umbral:Int)(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
         Seq.empty[Char]
         }
-        else if (n == 1){
+        else if (umbral == 1){
             reconstruirCadenaTurboMejorado(n, o)
         }
         else {
@@ -143,11 +146,11 @@ package object ReconstCadenasPar {
         }
     }
 
-    def reconstruirCadenaTurboAceleradaPar(n: Int, o: Oraculo): Seq[Char] = {
+    def reconstruirCadenaTurboAceleradaPar(umbral:Int)(n: Int, o: Oraculo): Seq[Char] = {
         if (n < 1) {
             Seq.empty[Char]
         }
-        else if (n <= 2){
+        else if (umbral <= 2){
             reconstruirCadenaTurboMejorado(n, o)
         }
         else {
