@@ -77,35 +77,35 @@ val ing2 = reconstruirCadenaIngenuo(sec2.length, or_2)
 val ing3 = reconstruirCadenaIngenuo(sec3.length, or_3)
 
 
-val ingPar1 = reconstruirCadenaIngenuoPar(sec1.length, or_1)
-val ingPar2 = reconstruirCadenaIngenuoPar(sec2.length, or_2)
-val ingPar3 = reconstruirCadenaIngenuoPar(sec3.length, or_3)
+val ingPar1 = reconstruirCadenaIngenuoPar(4)(sec1.length, or_1)
+val ingPar2 = reconstruirCadenaIngenuoPar(4)(sec2.length, or_2)
+val ingPar3 = reconstruirCadenaIngenuoPar(4)(sec3.length, or_3)
 
 val mejo1 = reconstruirCadenaMejorado(sec1.length, or_1)
 val mejo2 = reconstruirCadenaMejorado(sec2.length, or_2)
 val mejo3 = reconstruirCadenaMejorado(sec3.length, or_3)
 
-val mejoPar1 = reconstruirCadenaMejoradoPar(sec1.length, or_1)
-val mejoPar2 = reconstruirCadenaMejoradoPar(sec2.length, or_2)
-val mejoPar3 = reconstruirCadenaMejoradoPar(sec3.length, or_3)
+val mejoPar1 = reconstruirCadenaMejoradoPar(1)(sec1.length, or_1)
+val mejoPar2 = reconstruirCadenaMejoradoPar(1)(sec2.length, or_2)
+val mejoPar3 = reconstruirCadenaMejoradoPar(1)(sec3.length, or_3)
 
 val turbo1 = reconstruirCadenaTurbo(sec1.length, or_1)
 val turbo3 = reconstruirCadenaTurbo(sec3.length, or_3)
 
-val turboPar1 = reconstruirCadenaTurboPar(sec1.length, or_1)
-val turboPar3 = reconstruirCadenaTurboPar(sec3.length, or_3)
+val turboPar1 = reconstruirCadenaTurboPar(1)(sec1.length, or_1)
+val turboPar3 = reconstruirCadenaTurboPar(1)(sec3.length, or_3)
 
 val turboMejo1 = reconstruirCadenaTurboMejorado(sec1.length, or_1)
 val turboMejo3 = reconstruirCadenaTurboMejorado(sec3.length, or_3)
 
-val turboMejoPar1 = reconstruirCadenaTurboMejoradoPar(sec1.length, or_1)
-val turboMejoPar3 = reconstruirCadenaTurboMejoradoPar(sec3.length, or_3)
+val turboMejoPar1 = reconstruirCadenaTurboMejoradoPar(1)(sec1.length, or_1)
+val turboMejoPar3 = reconstruirCadenaTurboMejoradoPar(1)(sec3.length, or_3)
 
 val turboAce1 = reconstruirCadenaTurboAcelerada(sec1.length, or_1)
 val turboAce3 = reconstruirCadenaTurboAcelerada(sec3.length, or_3)
 
-val turboAcePar1 = reconstruirCadenaTurboAceleradaPar(sec1.length, or_1)
-val turboAcePar3 = reconstruirCadenaTurboAceleradaPar(sec3.length, or_3)
+val turboAcePar1 = reconstruirCadenaTurboAceleradaPar(2)(sec1.length, or_1)
+val turboAcePar3 = reconstruirCadenaTurboAceleradaPar(2)(sec3.length, or_3)
 
 ///COMPARACION RESULTADOS///
 /**************para comparar resultados usar compareSeqs**************/
@@ -152,7 +152,7 @@ val maximaPotencia = 8 //ajustar al deseado para el benchmark
 //Benchmarks para reconstruirCadenaIngenuo
 
 automaticBenchIndividual(reconstruirCadenaIngenuo,List(),1,tamanio)
-automaticBenchIndividual(reconstruirCadenaIngenuoPar,List(),1,tamanio)
+automaticBenchIndividual(reconstruirCadenaIngenuoPar(4),List(),1,tamanio)
 
 
 //Benchmarks para reconstruirCadenaMejorado vs reconstruirCadenaTurbo
@@ -162,10 +162,10 @@ automaticBenchPotencias(reconstruirCadenaMejorado,reconstruirCadenaTurbo,List(),
 automaticBenchPotencias(reconstruirCadenaTurboMejorado,reconstruirCadenaTurboAcelerada,List(),0,maximaPotencia)
 
 //Benchmarks para reconstruirCadenaMejorado vs reconstruirCadenaMejoradoPar
-automaticBenchPotencias(reconstruirCadenaMejorado,reconstruirCadenaMejoradoPar,List(),0,maximaPotencia)
+automaticBenchPotencias(reconstruirCadenaMejorado,reconstruirCadenaMejoradoPar(1),List(),0,maximaPotencia)
 
 //Benchmarks para reconstruirCadenaMejoradoPar vs reconstruirCadenaTurboPar
-automaticBenchPotencias(reconstruirCadenaMejoradoPar,reconstruirCadenaTurboPar,List(),0,maximaPotencia)
+automaticBenchPotencias(reconstruirCadenaMejoradoPar(1),reconstruirCadenaTurboPar(1),List(),0,maximaPotencia)
 
 //Benchmarks para reconstruirCadenaTurboMejoradoPar vs reconstruirCadenaTurboAceleradoPar
-automaticBenchPotencias(reconstruirCadenaTurboMejoradoPar,reconstruirCadenaTurboAceleradaPar,List(),0,maximaPotencia)
+automaticBenchPotencias(reconstruirCadenaTurboMejoradoPar(1),reconstruirCadenaTurboAceleradaPar(2),List(),0,maximaPotencia)
